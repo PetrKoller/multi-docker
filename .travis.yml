@@ -1,0 +1,21 @@
+language: generic
+services:
+  - docker
+
+before_install:
+  - docker build -t petrkoller/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true petrkoller/react-test npm test
+
+after_success
+  - docker build -t petrkoller/multi-client ./client
+  - docker build -t petrkoller/multi-nginx ./nginx
+  - docker build -t petrkoller/multi-server ./server
+  - docker build -t petrkoller/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push petrkoller/multi-client
+  - docker push petrkoller/multi-nginx
+  - docker push petrkoller/multi-server
+  - docker push petrkoller/multi-worker
+  
