@@ -8,7 +8,7 @@ before_install:
 script:
   - docker run -e CI=true petrkoller/react-test npm test
 
-after_success
+after_success:
   - docker build -t petrkoller/multi-client ./client
   - docker build -t petrkoller/multi-nginx ./nginx
   - docker build -t petrkoller/multi-server ./server
@@ -18,4 +18,3 @@ after_success
   - docker push petrkoller/multi-nginx
   - docker push petrkoller/multi-server
   - docker push petrkoller/multi-worker
-  
